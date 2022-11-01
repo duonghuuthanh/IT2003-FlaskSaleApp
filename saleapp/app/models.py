@@ -1,6 +1,13 @@
-from sqlalchemy import Column, Integer, Boolean, Float, String, Text, ForeignKey
+from sqlalchemy import Column, Integer, Boolean, Float, String, Text, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from app import db, app
+from enum import Enum as UserEnum
+from flask_login import UserMixin
+
+
+class UserRoleEnum(UserEnum):
+    USER = 1
+    ADMIN = 2
 
 
 class BaseModel(db.Model):
@@ -33,6 +40,19 @@ class Product(BaseModel):
         return self.name
 
 
+class User(BaseModel, UserMixin):
+    name = Column(String(50), nullable=False)
+    email = Column(String(50))
+    username = Column(String(50), nullable=False)
+    password = Column(String(50), nullable=False)
+    avatar = Column(String(100))
+    user_role = Column(Enum(UserRoleEnum), default=UserRoleEnum.USER)
+    active = Column(Boolean, default=True)
+
+    def __str__(self):
+        return self.name
+
+
 if __name__ == '__main__':
     with app.app_context():
         # c1 = Category(name='Điện thoại')
@@ -44,20 +64,27 @@ if __name__ == '__main__':
         # db.session.add(c3)
         #
         # db.session.commit()
-        p1 = Product(name='Galaxy Note', description='Samsung, 128GB', price=25000000,
-                     image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
-                     category_id=1)
-        p2 = Product(name='S22 Plus', description='Samsung, 128GB', price=35000000,
-                     image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1647248722/r8sjly3st7estapvj19u.jpg',
-                     category_id=1)
-        p3 = Product(name='Note 10', description='Samsung, 128GB', price=28000000,
-                     image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
-                     category_id=2)
 
-        db.session.add(p1)
-        db.session.add(p2)
-        db.session.add(p3)
+        # p1 = Product(name='Galaxy Note', description='Samsung, 128GB', price=25000000,
+        #              image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
+        #              category_id=1)
+        # p2 = Product(name='S22 Plus', description='Samsung, 128GB', price=35000000,
+        #              image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1647248722/r8sjly3st7estapvj19u.jpg',
+        #              category_id=1)
+        # p3 = Product(name='Note 10', description='Samsung, 128GB', price=28000000,
+        #              image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
+        #              category_id=2)
+        #
+        # db.session.add(p1)
+        # db.session.add(p2)
+        # db.session.add(p3)
+        #
+        # db.session.commit()
 
+        import hashlib
+        u = User.query.get(1)
+        u.password = str(hashlib.md5("abc@123".strip().encode('utf-8')).digest())
+        db.session.add(u)
         db.session.commit()
 
-        #db.create_all()
+        # db.create_all()

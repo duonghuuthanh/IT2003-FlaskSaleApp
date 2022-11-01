@@ -1,0 +1,18 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+
+{{ current_user.name }}
+
+{% if current_user.is_authenticated %}
+    <h1 class="text-center text-info">TRANG CHỦ QUẢN TRỊ</h1>
+    <h3>Chào mừng<span class="text-danger">{{ current_user.name }}</span>!!!</h3>
+{% else %}
+    <h1 class="text-center text-info">ĐĂNG NHẬP QUẢN TRỊ</h1>
+    {% include 'layout/login.html' %}
+{% endif %}
+
+
+
+
+{% endblock %}
