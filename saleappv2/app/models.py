@@ -52,6 +52,7 @@ class User(BaseModel, UserMixin):
 
 if __name__ == '__main__':
     with app.app_context():
+        db.create_all()
         # c1 = Category(name='Điện thoại')
         # c2 = Category(name='Máy tính bảng')
         # c3 = Category(name='Phụ kiện')
@@ -76,7 +77,7 @@ if __name__ == '__main__':
         # db.session.commit()
 
         import hashlib
-        password = str(hashlib.md5('123456'.encode('utf-8')).digest())
+        password = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
         u = User(name='Thanh', username='admin',
                  password=password,
                  user_role=UserRole.ADMIN,
@@ -84,4 +85,3 @@ if __name__ == '__main__':
         db.session.add(u)
         db.session.commit()
 
-        # db.create_all()

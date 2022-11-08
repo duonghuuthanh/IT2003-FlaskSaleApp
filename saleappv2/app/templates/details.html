@@ -9,7 +9,7 @@
     </div>
     <div class="col-md-8 col-sm-6">
         <h1>{{ product.name }}</h1>
-        <p>{{ product.description }}</p>
+        <p>{{ product.description|safe }}</p>
         <h3>{{ "{:,.1f}".format(product.price) }} VNĐ</h3>
     </div>
 </div>

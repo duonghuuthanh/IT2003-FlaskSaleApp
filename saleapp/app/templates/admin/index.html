@@ -2,8 +2,6 @@
 
 {% block body %}
 
-{{ current_user.name }}
-
 {% if current_user.is_authenticated %}
     <h1 class="text-center text-info">TRANG CHỦ QUẢN TRỊ</h1>
     <h3>Chào mừng<span class="text-danger">{{ current_user.name }}</span>!!!</h3>

@@ -55,6 +55,7 @@ class User(BaseModel, UserMixin):
 
 if __name__ == '__main__':
     with app.app_context():
+        db.create_all()
         # c1 = Category(name='Điện thoại')
         # c2 = Category(name='Máy tính bảng')
         # c3 = Category(name='Phụ kiện')
@@ -82,9 +83,13 @@ if __name__ == '__main__':
         # db.session.commit()
 
         import hashlib
-        u = User.query.get(1)
-        u.password = str(hashlib.md5("abc@123".strip().encode('utf-8')).digest())
+
+        password = str(hashlib.md5("123456".strip().encode('utf-8')).hexdigest())
+        u = User(name='Thanh', username='admin', password=password,
+                 avatar='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
+                 user_role=UserRoleEnum.ADMIN)
+
         db.session.add(u)
         db.session.commit()
 
-        # db.create_all()
+

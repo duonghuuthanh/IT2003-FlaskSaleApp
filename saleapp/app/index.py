@@ -1,6 +1,7 @@
 from flask import render_template, request, redirect
 from app import app, dao, login
-from flask_login import login_user
+from flask_login import login_user, logout_user
+import cloudinary.uploader
 from app import admin
 
 
@@ -19,6 +20,55 @@ def product_detail(product_id) :
     return render_template('details.html', product=p)
 
 
+@app.route('/register', methods=['get', 'post'])
+def register():
+    err_msg = ''
+    if request.method == 'POST':
+        password = request.form['password']
+        confirm = request.form['confirm']
+        if password.__eq__(confirm):
+            # upload cloudinary
+            avatar=''
+            if request.files:
+                res = cloudinary.uploader.upload(request.files['avatar'])
+                avatar = res['secure_url']
+
+            # Lưu user
+            try:
+                dao.register(name=request.form['name'],
+                             username=request.form['username'],
+                             password=request.form['password'],
+                             avatar=avatar)
+            except:
+                err_msg = 'Đã có lỗi xảy ra! Vui lòng quay lại sau!'
+            else:
+                return redirect('/login')
+        else:
+            err_msg = 'Mật khẩu KHÔNG khớp!'
+
+    return render_template('register.html', err_msg=err_msg)
+
+
+@app.route('/login', methods=['get', 'post'])
+def login_my_user():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        user = dao.auth_user(username=username, password=password)
+        if user:
+            login_user(user=user)
+            return redirect('/')
+
+    return render_template('login.html')
+
+
+@app.route('/logout')
+def logout_my_user():
+    logout_user()
+    return redirect('/login')
+
+
 @app.route('/login-admin', methods=['post'])
 def login_admin():
     username = request.form['username']
@@ -26,7 +76,7 @@ def login_admin():
 
     u = dao.auth_user(username=username, password=password)
     if u:
-        login_user(user=u, force=True)
+        login_user(user=u)
 
     return redirect('/admin')
 
