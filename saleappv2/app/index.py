@@ -11,8 +11,7 @@ def index():
     cate_id = request.args.get('category_id')
     kw = request.args.get('keyword')
     products = dao.load_products(category_id=cate_id, kw=kw)
-    return render_template('index.html',
-                           products=products)
+    return render_template('index.html', products=products)
 
 
 @app.route('/products/<int:product_id>')
@@ -59,7 +58,9 @@ def login_my_user():
         user = dao.auth_user(username=username, password=password)
         if user:
             login_user(user)
-            return redirect('/')
+
+            u = request.args.get('next')
+            return redirect(u if u else '/')
 
     return render_template('login.html')
 
@@ -111,6 +112,48 @@ def add_to_cart():
     session[key] = cart
 
     return jsonify(utils.cart_stats(cart))
+
+
+@app.route('/cart/<product_id>', methods=['put'])
+def update_cart(product_id):
+    key = app.config['CART_KEY']
+    cart = session.get(key)
+
+    if cart and product_id in cart:
+        quantity = int(request.json['quantity'])
+        cart[product_id]['quantity'] = quantity
+
+    session[key] = cart
+
+    return jsonify(utils.cart_stats(cart))
+
+
+@app.route('/cart/<product_id>', methods=['delete'])
+def delete_cart(product_id):
+    key = app.config['CART_KEY']
+    cart = session.get(key)
+
+    if cart and product_id in cart:
+        del cart[product_id]
+
+    session[key] = cart
+
+    return jsonify(utils.cart_stats(cart))
+
+
+@app.route('/pay')
+@login_required
+def pay():
+    err_msg = ''
+    key = app.config['CART_KEY']
+    cart = session.get(key)
+
+    if dao.add_receipt(cart=cart):
+        del session[key]
+    else:
+        err_msg = 'Đã có lỗi xảy ra!'
+
+    return jsonify({'err_msg': err_msg})
 
 
 @app.context_processor
