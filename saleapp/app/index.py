@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, session, jsonify
 from app import app, dao, login
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, login_required
 import cloudinary.uploader
 from app.decorators import annonymous_user
 import utils
@@ -60,7 +60,10 @@ def login_my_user():
         user = dao.auth_user(username=username, password=password)
         if user:
             login_user(user=user)
-            return redirect('/')
+
+            url_next = request.args.get('next')
+
+            return redirect(url_next if url_next else '/')
 
     return render_template('login.html')
 
@@ -122,6 +125,34 @@ def update_cart(product_id):
 
     session[key] = cart
     return jsonify(utils.cart_stats(cart=cart))
+
+
+@app.route('/cart/<product_id>', methods=['delete'])
+def delete_cart(product_id):
+    key = app.config['MY_CART']
+    cart = session.get(key)
+    if cart and product_id in cart:
+        del cart[product_id]
+
+    session[key] = cart
+    return jsonify(utils.cart_stats(cart=cart))
+
+
+@app.route('/pay')
+@login_required
+def pay():
+    key = app.config['MY_CART']
+    cart = session.get(key)
+    err_msg = ''
+    if cart:
+        if dao.add_receipt(cart=cart):
+            del session[key]
+        else:
+            err_msg = 'Dữ liệu hóa đơn bị lỗi!'
+    else:
+        err_msg = 'Không có giỏ hàng!'
+
+    return {'err_msg': err_msg}
 
 
 @app.context_processor

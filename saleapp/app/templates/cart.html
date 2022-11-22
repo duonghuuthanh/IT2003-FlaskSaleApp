@@ -13,15 +13,15 @@
         <th></th>
     </tr>
     {% for c in session['cart'].values() %}
-    <tr>
+    <tr id="cart{{c.id}}">
         <td>{{ c.id }}</td>
         <td>{{ c.name }}</td>
-        <td>{{ c.price }}</td>
+        <td>{{ "{:,.1f}".format(c.price) }} VNĐ</td>
         <td>
-            <input type="number" class="form-control" onblur="updateCart({{c.id}}, this)" value="{{ c.quantity }}" />
+            <input type="number" class="form-control" onblur="updateCart({{c.id}}, this)" value="{{ c.quantity }}"/>
         </td>
         <td>
-            <input type="button" value="Xóa" class="btn btn-danger" />
+            <input type="button" value="Xóa" onclick="deleteCart({{c.id}})" class="btn btn-danger"/>
         </td>
     </tr>
     {% endfor %}
@@ -33,7 +33,11 @@
 </div>
 
 <div>
-    <input type="button" value="Thanh toán" class="btn btn-success" />
+    {% if current_user.is_authenticated %}
+    <input type="button" value="Thanh toán" onclick="pay()" class="btn btn-success"/>
+    {% else %}
+    <p>Vui lòng <a href="/login?next=/cart">đăng nhập</a> để thanh toán!</p>
+    {% endif %}
 </div>
 {% else %}
 <p class="text-secondary">Không có hàng trong giỏ</p>

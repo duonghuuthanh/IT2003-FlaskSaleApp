@@ -1,5 +1,6 @@
-from app.models import Category, Product, User
+from app.models import Category, Product, User, Receipt, ReceiptDetails
 from app import db
+from flask_login import current_user
 import hashlib
 
 
@@ -39,3 +40,37 @@ def register(name, username, password, avatar):
 
 def get_user_by_id(user_id):
     return User.query.get(user_id)
+
+
+def add_receipt(cart):
+    if cart:
+        """
+            {
+                "1" : {
+                    "id": "...",
+                    "name": "...",
+                    "price": "...",
+                    "quantity": "..."
+                },
+                "2" : {
+                    "id": "...",
+                    "name": "...",
+                    "price": "...",
+                    "quantity": "..."
+                }
+            }
+        """
+        r = Receipt(user=current_user)
+        db.session.add(r)
+        for c in cart.values():
+            d = ReceiptDetails(quantity=c['quantity'],
+                               price=c['price'],
+                               receipt=r,
+                               product_id=int(c['id']))
+            db.session.add(d)
+        try:
+            db.session.commit()
+        except:
+            return False
+        else:
+            return True

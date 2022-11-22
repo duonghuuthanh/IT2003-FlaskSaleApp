@@ -1,8 +1,9 @@
-from sqlalchemy import Column, Integer, Boolean, Float, String, Text, ForeignKey, Enum
+from sqlalchemy import Column, Integer, Boolean, Float, String, Text, ForeignKey, Enum, DateTime
 from sqlalchemy.orm import relationship, backref
 from app import db, app
 from enum import Enum as UserEnum
 from flask_login import UserMixin
+from datetime import datetime
 
 
 class UserRoleEnum(UserEnum):
@@ -43,6 +44,7 @@ class Product(BaseModel):
     tags = relationship('Tag', secondary='prod_tag',
                         lazy='subquery',
                         backref=backref('products', lazy=True))
+    receipt_details = relationship('ReceiptDetails', backref='product', lazy=True)
 
     def __str__(self):
         return self.name
@@ -63,9 +65,23 @@ class User(BaseModel, UserMixin):
     avatar = Column(String(100))
     user_role = Column(Enum(UserRoleEnum), default=UserRoleEnum.USER)
     active = Column(Boolean, default=True)
+    receipts = relationship('Receipt', backref='user', lazy=True)
 
     def __str__(self):
         return self.name
+
+
+class Receipt(BaseModel):
+    created_date = Column(DateTime, default=datetime.now())
+    user_id = Column(Integer, ForeignKey(User.id), nullable=False)
+    details = relationship('ReceiptDetails', backref='receipt', lazy=True)
+
+
+class ReceiptDetails(BaseModel):
+    quantity = Column(Integer, default=0)
+    price = Column(Float, default=0)
+    product_id = Column(Integer, ForeignKey(Product.id), nullable=False)
+    receipt_id = Column(Integer, ForeignKey(Receipt.id), nullable=False)
 
 
 if __name__ == '__main__':
