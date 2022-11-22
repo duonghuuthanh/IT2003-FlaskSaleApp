@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, Boolean, Float, String, Text, ForeignKey, Enum
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from app import db, app
 from enum import Enum as UserEnum
 from flask_login import UserMixin
@@ -26,6 +26,11 @@ class Category(BaseModel):
         return self.name
 
 
+prod_tag = db.Table('prod_tag',
+                    Column('product_id', Integer, ForeignKey('product.id'), primary_key=True),
+                    Column('tag_id', Integer, ForeignKey('tag.id'), primary_key=True))
+
+
 class Product(BaseModel):
     __tablename__ = 'product'
 
@@ -35,6 +40,16 @@ class Product(BaseModel):
     image = Column(String(100))
     active = Column(Boolean, default=True)
     category_id = Column(Integer, ForeignKey(Category.id), nullable=False)
+    tags = relationship('Tag', secondary='prod_tag',
+                        lazy='subquery',
+                        backref=backref('products', lazy=True))
+
+    def __str__(self):
+        return self.name
+
+
+class Tag(BaseModel):
+    name = Column(String(20), nullable=False, unique=True)
 
     def __str__(self):
         return self.name
@@ -43,7 +58,7 @@ class Product(BaseModel):
 class User(BaseModel, UserMixin):
     name = Column(String(50), nullable=False)
     email = Column(String(50))
-    username = Column(String(50), nullable=False)
+    username = Column(String(50), nullable=False, unique=True)
     password = Column(String(50), nullable=False)
     avatar = Column(String(100))
     user_role = Column(Enum(UserRoleEnum), default=UserRoleEnum.USER)
@@ -82,14 +97,12 @@ if __name__ == '__main__':
         #
         # db.session.commit()
 
-        import hashlib
-
-        password = str(hashlib.md5("123456".strip().encode('utf-8')).hexdigest())
-        u = User(name='Thanh', username='admin', password=password,
-                 avatar='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
-                 user_role=UserRoleEnum.ADMIN)
-
-        db.session.add(u)
-        db.session.commit()
-
-
+        # import hashlib
+        #
+        # password = str(hashlib.md5("123456".strip().encode('utf-8')).hexdigest())
+        # u = User(name='Thanh', username='admin', password=password,
+        #          avatar='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
+        #          user_role=UserRoleEnum.ADMIN)
+        #
+        # db.session.add(u)
+        # db.session.commit()
