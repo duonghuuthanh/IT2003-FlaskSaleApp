@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, Float, ForeignKey, Text, Enum
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from app import db, app
 from enum import Enum as UserEnum
 from flask_login import UserMixin
@@ -26,6 +26,13 @@ class Category(BaseModel):
         return self.name
 
 
+prod_tag = db.Table('prod_tag',
+                    Column('product_id', Integer,
+                           ForeignKey('product.id'), nullable=False, primary_key=True),
+                    Column('tag', Integer,
+                           ForeignKey('tag.id'), nullable=False, primary_key=True))
+
+
 class Product(BaseModel):
     name = Column(String(50), nullable=False)
     description = Column(Text)
@@ -33,6 +40,15 @@ class Product(BaseModel):
     image = Column(String(100))
     active = Column(Boolean, default=True)
     category_id = Column(Integer, ForeignKey(Category.id), nullable=False)
+    tags = relationship('Tag', secondary='prod_tag', lazy='subquery',
+                        backref=backref('products', lazy=True))
+
+    def __str__(self):
+        return self.name
+
+
+class Tag(BaseModel):
+    name = Column(String(50), nullable=False, unique=True)
 
     def __str__(self):
         return self.name
@@ -76,12 +92,12 @@ if __name__ == '__main__':
 
         # db.session.commit()
 
-        import hashlib
-        password = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
-        u = User(name='Thanh', username='admin',
-                 password=password,
-                 user_role=UserRole.ADMIN,
-                 avatar='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg')
-        db.session.add(u)
-        db.session.commit()
+        # import hashlib
+        # password = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
+        # u = User(name='Thanh', username='admin',
+        #          password=password,
+        #          user_role=UserRole.ADMIN,
+        #          avatar='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg')
+        # db.session.add(u)
+        # db.session.commit()
 

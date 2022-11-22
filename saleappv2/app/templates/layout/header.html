@@ -34,7 +34,9 @@
                 </li>
                 {% endif %}
 
-
+                <li class="nav-item">
+                    <a class="nav-link text-secondary" href="/cart">&#9989; Giỏ hàng <span class="badge bg-danger cart-counter">{{cart.total_quantity}}</span></a>
+                </li>
             </ul>
             <form class="d-flex" action="/">
                 <input class="form-control me-2" name="keyword" type="text" placeholder="Nhập từ khóa...">

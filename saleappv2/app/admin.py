@@ -1,6 +1,6 @@
 from flask_admin import Admin, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
-from app.models import Category, Product, UserRole
+from app.models import Category, Product, UserRole, Tag
 from app import app, db
 from flask_login import logout_user, current_user
 from flask import redirect
@@ -65,5 +65,6 @@ class LogoutView(AuthenticatedView):
 admin = Admin(app=app, name='Quản trị bán hàng', template_mode='bootstrap4')
 admin.add_view(AuthenticatedModelView(Category, db.session, name='Danh mục'))
 admin.add_view(ProductModelView(Product, db.session, name='Sản phẩm'))
+admin.add_view(AuthenticatedModelView(Tag, db.session, name='Tag'))
 admin.add_view(StatsView(name='Thống kê - báo cáo'))
 admin.add_view(LogoutView(name='Đăng xuất'))
