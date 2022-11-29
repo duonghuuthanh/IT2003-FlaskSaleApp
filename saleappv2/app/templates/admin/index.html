@@ -4,7 +4,43 @@
 
 {% if current_user.is_authenticated %}
 <h1 class="text-center text-info">TRANG CHỦ QUẢN TRỊ</h1>
-<h3>Chào mừng <span>{{ current_user.name }}</span>!!!</h3>
+<h3 class="text-info">Chào mừng <span>{{ current_user.name }}</span>!!!</h3>
+
+<div class="row">
+    <div class="col-md-5 col-sm-12">
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <th>Tên danh mục</th>
+                <th>Số lượng</th>
+            </tr>
+            {% for s in stats %}
+            <tr>
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
+                <td>{{ s[2] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-md-7 col-sm-12">
+        <canvas id="cateStats"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/my-stats.js') }}"></script>
+<script>
+    let labels = []
+    let data = []
+    {% for s in stats %}
+        labels.push('{{s[1]}}')
+        data.push({{ s[2] }})
+    {% endfor %}
+    window.onload = function() {
+        cateChart(labels, data);
+    }
+</script>
 {% else %}
 <h1 class="text-center text-success">ĐĂNG NHẬP QUẢN TRỊ</h1>
 <form method="post" action="/login-admin">

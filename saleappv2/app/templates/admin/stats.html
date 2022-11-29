@@ -2,4 +2,64 @@
 
 {% block body %}
 <h1 class="text-center text-info">THỐNG KÊ BÁO CÁO</h1>
+
+<div class="row">
+    <div class="col-md-5 col-sm-12">
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <th>Tên sản phẩm</th>
+                <th>Doanh thu</th>
+            </tr>
+            {% for s in stats %}
+            <tr>
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
+                {% if s[2] %}
+                <td>{{ "{:,.1f}".format(s[2]) }} VNĐ</td>
+                {% else %}
+                <td>0 VNĐ</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-md-7 col-sm-12">
+        <form>
+            <div class="form-group">
+                <input type="text" name="kw" placeholder="Nhập từ khóa" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Từ ngày</label>
+                <input type="date" name="from_date" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Đến ngày</label>
+                <input type="date" name="to_date" class="form-control" />
+            </div>
+            <div>
+                <input type="submit" value="Lọc dữ liệu" class="btn btn-info" />
+            </div>
+        </form>
+        <canvas id="revenueStats"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/my-stats.js') }}"></script>
+<script>
+    let labels = []
+    let data = []
+    {% for s in stats %}
+        labels.push('{{s[1]}}')
+        {% if s[2] %}
+        data.push({{ s[2] }})
+        {% else %}
+        data.push(0)
+        {% endif %}
+    {% endfor %}
+    window.onload = function() {
+        revenueChart(labels, data);
+    }
+</script>
 {% endblock %}
