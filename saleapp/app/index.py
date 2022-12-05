@@ -7,7 +7,7 @@ from app import admin
 app.add_url_rule('/', 'index', controllers.index)
 app.add_url_rule('/products/<int:product_id>', 'product-detail', controllers.product_detail)
 app.add_url_rule('/register', 'register', controllers.register, methods=['get', 'post'])
-app.add_url_rule('/login', 'login-user', controllers.logout_my_user, methods=['get', 'post'])
+app.add_url_rule('/login', 'login-user', controllers.login_my_user, methods=['get', 'post'])
 app.add_url_rule('/logout', 'logout', controllers.logout_my_user)
 app.add_url_rule('/login-admin', 'login-admin', controllers.login_admin, methods=['post'])
 app.add_url_rule("/cart", 'cart', controllers.cart)

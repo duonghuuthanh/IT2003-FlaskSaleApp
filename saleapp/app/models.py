@@ -86,7 +86,7 @@ class ReceiptDetails(BaseModel):
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()
+        # db.create_all()
         # c1 = Category(name='Điện thoại')
         # c2 = Category(name='Máy tính bảng')
         # c3 = Category(name='Phụ kiện')
@@ -97,21 +97,21 @@ if __name__ == '__main__':
         #
         # db.session.commit()
 
-        # p1 = Product(name='Galaxy Note', description='Samsung, 128GB', price=25000000,
-        #              image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
-        #              category_id=1)
-        # p2 = Product(name='S22 Plus', description='Samsung, 128GB', price=35000000,
-        #              image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1647248722/r8sjly3st7estapvj19u.jpg',
-        #              category_id=1)
-        # p3 = Product(name='Note 10', description='Samsung, 128GB', price=28000000,
-        #              image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
-        #              category_id=2)
-        #
-        # db.session.add(p1)
-        # db.session.add(p2)
-        # db.session.add(p3)
-        #
-        # db.session.commit()
+        p1 = Product(name='iPhone 13 Pro Max', description='Apple, 256GB', price=35000000,
+                     image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
+                     category_id=1)
+        p2 = Product(name='iPad Pro 2022', description='Apple, 128GB', price=32000000,
+                     image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1647248722/r8sjly3st7estapvj19u.jpg',
+                     category_id=2)
+        p3 = Product(name='Sạc dự phòng', description='Apple, 16GB', price=24000000,
+                     image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
+                     category_id=3)
+
+        db.session.add(p1)
+        db.session.add(p2)
+        db.session.add(p3)
+
+        db.session.commit()
 
         # import hashlib
         #
