@@ -1,15 +1,42 @@
 {% extends 'layout/base.html' %}
 
 {% block content %}
-  <h1 class="text-center text-success">CHI TIẾT SẢN PHẨM</h1>
-  <div class="row">
+<h1 class="text-center text-success">CHI TIẾT SẢN PHẨM</h1>
+<div class="row">
     <div class="col-md-4 col-sm-6">
-      <img src="{{ product.image }}" class="img-fluid" alt="{{ product.name }}" />
+        <img src="{{ product.image }}" class="img-fluid" alt="{{ product.name }}"/>
     </div>
     <div class="col-md-8 col-sm-6">
-      <h1>{{ product.name }}</h1>
-      <p>{{ product.description|safe }}</p>
-      <h3 class="text-danger">{{ "{:,.1f}".format(product.price) }} VNĐ</h3>
+        <h1>{{ product.name }}</h1>
+        <p>{{ product.description|safe }}</p>
+        <h3 class="text-danger">{{ "{:,.1f}".format(product.price) }} VNĐ</h3>
     </div>
-  </div>
+</div>
+<hr>
+
+{% if current_user.is_authenticated %}
+<div class="form-group mt-2">
+    <textarea class="form-control" id="comment-content" placeholder="Nội dung bình luận"></textarea>
+    <button onclick="addComment({{ product.id }})" class="btn btn-success mt-1">Thêm bình luận</button>
+
+</div>
+
+{% else %}
+<p>Vui lòng <a href="/login?next=/products/{{ product.id }}">đăng nhập</a> để bình luận</p>
+{% endif %}
+<div class="spinner-border text-primary my-spinner"></div>
+<ul  id="comments" class="list-group mt-2">
+
+</ul>
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/details.js') }}"></script>
+<script>
+  window.onload = () => {
+    loadComments({{product.id}})
+  }
+
+</script>
 {% endblock %}

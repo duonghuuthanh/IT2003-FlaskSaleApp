@@ -15,6 +15,8 @@ app.add_url_rule('/cart', 'add-cart', controllers.add_to_cart, methods=['post'])
 app.add_url_rule('/cart/<product_id>', 'update-cart', controllers.update_cart, methods=['put'])
 app.add_url_rule('/cart/<product_id>', 'delete-cart', controllers.delete_cart, methods=['delete'])
 app.add_url_rule('/pay', 'pay', controllers.pay)
+app.add_url_rule('/products/<product_id>/comments', 'comments', controllers.comments)
+app.add_url_rule('/products/<product_id>/comments', 'comment-add', controllers.add_comment, methods=['post'])
 
 
 @app.context_processor

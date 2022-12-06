@@ -6,7 +6,7 @@ function cateChart(labels, data) {
     data: {
       labels: labels,
       datasets: [{
-        label: 'Thống kê số sản phẩm theo danh mục',
+        label: 'Số lượng',
         data: data,
         borderWidth: 1,
         backgroundColor: ['red', 'green', 'blue', 'gold', 'green', 'brown']
@@ -30,7 +30,7 @@ function revenueChart(labels, data) {
     data: {
       labels: labels,
       datasets: [{
-        label: 'Thống kê doanh thu',
+        label: 'Doanh thu',
         data: data,
         borderWidth: 1,
         backgroundColor: ['red', 'green', 'blue', 'gold', 'brown']
