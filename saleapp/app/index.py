@@ -1,6 +1,6 @@
 from flask import session
 from app import app, dao, login, controllers
-import utils
+from app import utils
 from app import admin
 
 

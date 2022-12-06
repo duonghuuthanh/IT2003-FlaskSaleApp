@@ -1,12 +1,13 @@
 from flask import session
 from app import app, dao, login, utils, controllers
 from app import admin
+from app import *
 
 
 app.add_url_rule('/', 'index', controllers.index)
 app.add_url_rule('/products/<int:product_id>', 'product-details', controllers.product_detail)
 app.add_url_rule('/register', 'register', controllers.register, methods=['get', 'post'])
-app.add_url_rule('/login', 'login-user', controllers.logout_my_user, methods=['get', 'post'])
+app.add_url_rule('/login', 'login-user', controllers.login_my_user, methods=['get', 'post'])
 app.add_url_rule('/logout', 'logout', controllers.logout_my_user)
 app.add_url_rule('/login-admin', 'login-admin', controllers.login_admin, methods=['post'])
 app.add_url_rule('/cart', 'cart', controllers.cart)
@@ -14,6 +15,8 @@ app.add_url_rule('/cart', 'add-cart', controllers.add_to_cart, methods=['post'])
 app.add_url_rule('/cart/<product_id>', 'update-cart', controllers.update_cart, methods=['put'])
 app.add_url_rule('/cart/<product_id>', 'delete-cart', controllers.delete_cart, methods=['delete'])
 app.add_url_rule('/pay', 'pay', controllers.pay)
+app.add_url_rule('/products/<product_id>/comments', 'comments', controllers.comments)
+app.add_url_rule('/products/<product_id>/comments', 'comment-add', controllers.add_comment, methods=['post'])
 
 
 @app.context_processor

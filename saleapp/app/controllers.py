@@ -3,7 +3,7 @@ from app import app, dao
 from flask_login import login_user, logout_user, login_required
 import cloudinary.uploader
 from app.decorators import annonymous_user
-import utils
+from app import utils
 
 
 def index():

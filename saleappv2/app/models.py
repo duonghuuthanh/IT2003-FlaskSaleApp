@@ -44,6 +44,7 @@ class Product(BaseModel):
     tags = relationship('Tag', secondary='prod_tag', lazy='subquery',
                         backref=backref('products', lazy=True))
     receipt_details = relationship('ReceiptDetails', backref='product', lazy=True)
+    comments = relationship('Comment', backref='product', lazy=True)
 
     def __str__(self):
         return self.name
@@ -64,6 +65,7 @@ class User(BaseModel, UserMixin):
     active = Column(Boolean, default=True)
     user_role = Column(Enum(UserRole), default=UserRole.USER)
     receipts = relationship('Receipt', backref='user', lazy=True)
+    comments = relationship('Comment', backref='user', lazy=True)
 
     def __str__(self):
         return self.name
@@ -82,6 +84,13 @@ class ReceiptDetails(BaseModel):
     product_id = Column(Integer, ForeignKey(Product.id), nullable=False)
 
 
+class Comment(BaseModel):
+    content = Column(String(255), nullable=False)
+    created_date = Column(DateTime, default=datetime.now())
+    product_id = Column(Integer, ForeignKey(Product.id), nullable=False)
+    user_id = Column(Integer, ForeignKey(User.id), nullable=False)
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
@@ -91,23 +100,35 @@ if __name__ == '__main__':
         #
         # db.session.add_all([c1, c2, c3])
         # db.session.commit()
-
-        # p1 = Product(name='iPhone 13', description='Apple, 128GB', price=25000000,
+        #
+        # p1 = Product(name='iPhone 13 Pro Max', description='Apple, 256GB', price=35000000,
         #              image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
         #              category_id=1)
-        # p2 = Product(name='iPhone 14', description='Apple, 128GB', price=35000000,
+        # p2 = Product(name='iPad Pro 2022', description='Apple, 128GB', price=32000000,
+        #              image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1647248722/r8sjly3st7estapvj19u.jpg',
+        #              category_id=2)
+        # p3 = Product(name='Sạc dự phòng', description='Apple, 16GB', price=24000000,
+        #              image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
+        #              category_id=3)
+        # p4 = Product(name='Galax Fold Z', description='Samsung, 256GB', price=33000000,
+        #              image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
+        #              category_id=1)
+        # p5 = Product(name='Galaxy Note Ultra 2022', description='Samsung, 128GB', price=32000000,
         #              image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1647248722/r8sjly3st7estapvj19u.jpg',
         #              category_id=1)
-        # p3 = Product(name='iPad Pro 2022', description='Apple, 128GB', price=28000000,
+        # p6 = Product(name='Apple Watch S7', description='Apple, 16GB', price=24000000,
         #              image='https://res.cloudinary.com/dxxwcby8l/image/upload/v1646729569/fi9v6vdljyfmiltegh7k.jpg',
-        #              category_id=2)
+        #              category_id=3)
         #
         # db.session.add(p1)
         # db.session.add(p2)
         # db.session.add(p3)
-
+        # db.session.add(p4)
+        # db.session.add(p5)
+        # db.session.add(p6)
+        #
         # db.session.commit()
-
+        #
         # import hashlib
         # password = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
         # u = User(name='Thanh', username='admin',

@@ -18,4 +18,29 @@
         </div>
     </div>
 </div>
+
+<hr>
+
+{% if current_user.is_authenticated %}
+<div class="form-group">
+    <textarea placeholder="Nội dung bình luận..." id="comment-content" class="form-control"></textarea>
+    <button class="btn btn-info mt-1" onclick="addComment({{ product.id }})">Thêm bình luận</button>
+</div>
+{% else %}
+<p>Vui lòng <a href="/login?next=/products/{{product.id}}">đăng nhập</a> để bình luận!</p>
+{% endif %}
+<div class="spinner-grow spinner-grow-sm my-spinner"></div>
+<ul class="list-group mt-2" id="comments">
+
+</ul>
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/details.js') }}"></script>
+<script>
+    window.onload = function() {
+        loadComments({{ product.id }})
+    }
+</script>
 {% endblock %}

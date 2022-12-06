@@ -142,3 +142,39 @@ def pay():
         err_msg = 'Đã có lỗi xảy ra!'
 
     return jsonify({'err_msg': err_msg})
+
+
+def comments(product_id):
+    data = [] # serializer
+    for c in dao.load_comments_by_prod(product_id):
+        data.append({
+            "id": c.id,
+            "content": c.content,
+            "created_date": str(c.created_date),
+            "user": {
+                "name": c.user.name,
+                "avatar": c.user.avatar
+            }
+        })
+
+    return jsonify(data)
+
+
+def add_comment(product_id):
+    try:
+        c = dao.add_comment(product_id, request.json['content'])
+    except:
+        return jsonify({'status': 500})
+    else:
+        return jsonify({
+            'status': 204,
+            'comment': {
+                "id": c.id,
+                "content": c.content,
+                "created_date": str(c.created_date),
+                    "user": {
+                        "name": c.user.name,
+                        "avatar": c.user.avatar
+                    }
+            }
+        })
